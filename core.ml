@@ -6,6 +6,8 @@ type ('a, 'b) either = ('a, 'b) Either.t
 module Array = Core_array
 module List = Core_list
 module Arrow = Arrow
+module Queue = Core_queue
+module Inttbl = Inttbl
 
 let set_global s x =
   Js.Unsafe.(set (variable "window") (Js.string s) x)
@@ -15,3 +17,4 @@ let print x : unit =
 
 let println s : unit = print (Js.string s)
 
+let (|>) x f = f x
