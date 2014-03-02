@@ -4,7 +4,15 @@ let iter xs ~f = iter f xs
 
 let map xs ~f = map f xs
 
+let rev_map xs ~f = rev_map f xs
+
 let filter xs ~f = filter f xs
+
+let fold xs ~init ~f = fold_left f init xs
+
+let fold_left = fold
+
+let fold_right xs ~f ~init = fold_right f xs init
 
 let rec filter_map xs ~f = match xs with
   | [] -> []

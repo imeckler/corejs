@@ -1,12 +1,19 @@
 type 'a t
 
-let inttbl = Js.Unsafe.obj [||]
+let inttbl = Js.Unsafe.obj [|
+  "iter", Js.Unsafe.eval_string "(function(t, f){for(var k in t){if(t.hasOwnProperty(k)){f(parseInt(k),t[k]);}}})"
+|]
 
+let print x : unit =
+  Js.Unsafe.(fun_call (variable "console.log") [| inject x |])
+
+(*
 let () =
-  let iter = "function(t, f){for(var k in t){if(x.hasOwnProperty(k)){f(parseInt(k),x[k]);}}}" in
+  let iter =
   Js.Unsafe.set inttbl (Js.string "iter") (Js.Unsafe.eval_string iter)
 ;;
 
+*)
 let create () = Js.Unsafe.obj [||]
 
 let add t ~key ~data = Js.Unsafe.set t key data
@@ -21,7 +28,7 @@ let find t k =
 
 let iter t ~f =
   let js_iter = Js.Unsafe.get inttbl (Js.string "iter") in
-  Js.Unsafe.(fun_call js_iter [| inject (Js.wrap_callback (fun key data -> f ~key ~data)) |])
+  Js.Unsafe.(fun_call js_iter [| inject t; inject (Js.wrap_callback (fun key data -> f ~key ~data)) |])
 ;;
 
 let map t ~f =

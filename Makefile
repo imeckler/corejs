@@ -1,30 +1,53 @@
-OCAMLC=ocamlfind ocamlc -package js_of_ocaml -package js_of_ocaml.syntax -syntax camlp4o -c
+OCAMLC=ocamlfind ocamlc -package js_of_ocaml -package js_of_ocaml.syntax -syntax camlp4o -g
 
-all: core
+OBJS=time.cmo either.cmo option.cmo core_list.cmo core_array.cmo arrow.cmo inttbl.cmo core_string.cmo core_queue.cmo core.cmo
 
-core: array list option either arrow inttbl queue
-	ocamlfind ocamlc -package js_of_ocaml -c either.cmo option.cmo list.cmo array.cmo arrow.cmo inttbl.cmo core.ml
+all: $(OBJS)
 
-arrow:
-	ocamlfind ocamlc -package js_of_ocaml -c arrow.ml
+time.cmi:
+	$(OCAMLC) -c time.mli
 
-option:
-	ocamlfind ocamlc -package js_of_ocaml -c option.ml
+time.cmo: time.cmi
+	$(OCAMLC) -c time.ml
 
-either:
-	ocamlfind ocamlc -package js_of_ocaml -c either.ml
+either.cmo:
+	$(OCAMLC) -c either.ml
 
-array:
-	ocamlfind ocamlc -package js_of_ocaml -c core_array.ml
+option.cmo:
+	$(OCAMLC) -c option.ml
 
-list: either
-	ocamlfind ocamlc -package js_of_ocaml -c either.cmo core_list.ml
+core_list.cmo: option.cmo either.cmo
+	$(OCAMLC) option.cmo either.cmo -c core_list.ml
 
-queue: list
-	$(OCAMLC) core_list.cmo core_queue.mli core_queue.ml
+core_array.cmo:
+	$(OCAMLC) -c core_array.ml
 
-inttbl:
-	ocamlfind ocamlc -package js_of_ocaml -c inttbl.mli inttbl.ml
+arrow.cmo:
+	$(OCAMLC) -c arrow.ml
+
+inttbl.cmi:
+	$(OCAMLC) -c inttbl.mli
+
+inttbl.cmo: inttbl.cmi
+	$(OCAMLC) -c inttbl.ml
+
+core_string.cmo:
+	$(OCAMLC) -c core_string.ml
+
+core_queue.cmi:
+	$(OCAMLC) core_list.cmo -c core_queue.mli
+
+core_queue.cmo: core_list.cmo core_queue.cmi
+	$(OCAMLC) core_list.cmo -c core_queue.ml
+
+core.cmo: time.cmo either.cmo option.cmo core_list.cmo core_array.cmo arrow.cmo core_string.cmo inttbl.cmo core_string.cmo core_queue.cmo
+	$(OCAMLC) time.cmo either.cmo option.cmo core_list.cmo core_array.cmo arrow.cmo core_string.cmo inttbl.cmo core_string.cmo core_queue.cmo -c core.ml
+
+#%.cmi: %.mli
+###	$(OCAMLC) -c $<
+
+###%.cmo: %.ml
+###	$(OCAMLC) -c $<
 
 clean:
 	rm *.cmo
