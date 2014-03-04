@@ -7,11 +7,20 @@ License:     WTFPL
 Plugins:     META (0.4)
 
 Library corejs
-  Path:       src
-  BuildDepends: js_of_ocaml,js_of_ocaml.syntax
-  BuildTools: ocamlbuild, camlp4o
+  Path:           src
+  BuildDepends:   js_of_ocaml,js_of_ocaml.syntax
+  BuildTools:     ocamlbuild, camlp4o
   CompiledObject: byte
-  Modules:  Either,Core
-  ByteOpt: -syntax camlp4o -package js_of_ocaml -package js_of_ocaml.syntax
-  XMETARequires: js_of_ocaml,js_of_ocaml.syntax
+  Modules:        Core, 
+                  Arrow,
+                  Option,
+                  Core_array,
+                  Core_list,
+                  Core_queue,
+                  Core_string,
+                  Either,
+                  Inttbl,
+                  Time
+  ByteOpt:        -syntax camlp4o -package js_of_ocaml -package js_of_ocaml.syntax
+  XMETARequires:  js_of_ocaml,js_of_ocaml.syntax
   

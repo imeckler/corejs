@@ -1,3 +1,8 @@
 *.cmo
 *.cmi
 _build
+.merlin
+setup.data
+setup.log
+setup.ml
+_tags
