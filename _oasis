@@ -1,0 +1,17 @@
+OASISFormat: 0.4
+Name:        corejs
+Version:     0.1
+Synopsis:    A few core utils for js_of_ocaml hacking
+Authors:     Izaak Meckler
+License:     WTFPL
+Plugins:     META (0.4)
+
+Library corejs
+  Path:       src
+  BuildDepends: js_of_ocaml,js_of_ocaml.syntax
+  BuildTools: ocamlbuild, camlp4o
+  CompiledObject: byte
+  Modules:  Either,Core
+  ByteOpt: -syntax camlp4o -package js_of_ocaml -package js_of_ocaml.syntax
+  XMETARequires: js_of_ocaml,js_of_ocaml.syntax
+  
