@@ -10,11 +10,16 @@ let mapi arr ~f = mapi f arr
 
 let init n ~f = init n f
 
+let create ~len x = create len x
+
 let fold_right t ~f ~init = fold_right f t init
 
-let fold t ~init ~f = fold_left t ~init ~f
+let fold t ~init ~f = fold_left f init t
 
 let concat_map t ~f = concat (to_list (map ~f t))
+
+let push (x : 'a) (t : 'a array) =
+  ignore ((Obj.magic t : 'a Js.js_array Js.t)##push(x))
 
 let exists t ~f =
   let rec loop i =
@@ -25,6 +30,18 @@ let exists t ~f =
     else loop (i - 1)
   in
   loop (length t - 1)
+
+let findi t ~f =
+  let length = length t in
+  let rec loop i =
+    if i >= length then None
+    else if f i t.(i) then Some (i, t.(i))
+    else loop (i + 1)
+  in
+  loop 0
+;;
+
+let find t ~f = Option.map (findi t ~f:(fun _i x -> f x)) ~f:(fun (_i, x) -> x)
 
 let for_all t ~f =
   let rec loop i =

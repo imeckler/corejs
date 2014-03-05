@@ -53,3 +53,7 @@ let of_list xs =
   Core_list.iter ~f:(fun x -> enqueue t x) xs;
   t
 
+let of_array = Js.array
+
+let to_array = Js.to_array
+
