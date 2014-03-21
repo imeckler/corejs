@@ -9,6 +9,7 @@ module String = Core_string
 module Arrow  = Arrow
 module Queue  = Core_queue
 module Inttbl = Inttbl
+module Monad  = Monad
 
 module Time = Time
 

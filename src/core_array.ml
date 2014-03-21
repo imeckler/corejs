@@ -31,6 +31,8 @@ let exists t ~f =
   in
   loop (length t - 1)
 
+let mem ?(eq=(=)) t x0 = exists t ~f:(fun x -> eq x x0)
+
 let findi t ~f =
   let length = length t in
   let rec loop i =
