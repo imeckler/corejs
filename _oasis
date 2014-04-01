@@ -19,6 +19,7 @@ Library corejs
                   Core_queue,
                   Core_string,
                   Either,
+                  Functor,
                   Inttbl,
                   Monad,
                   Time

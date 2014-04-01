@@ -1,4 +1,5 @@
-type 'a t
+(* Silly hack to make polymorphic equality work *)
+type 'a t = 'a array
 
 let inttbl = Js.Unsafe.obj [|
   "iter", Js.Unsafe.eval_string "(function(t, f){for(var k in t){if(t.hasOwnProperty(k)){f(parseInt(k),t[k]);}}})";

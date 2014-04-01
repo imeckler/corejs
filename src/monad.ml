@@ -191,3 +191,118 @@ module Make2 (M : Basic2) : S2 with type ('a, 'd) t := ('a, 'd) M.t = struct
     | t :: ts -> t >>= fun () -> all_ignore ts
 
 end
+
+module type Basic3 = sig
+  type ('a, 'c, 'd) t
+  val bind : ('a, 'c, 'd) t -> ('a -> ('b, 'c, 'd) t) -> ('b, 'c, 'd) t
+  val map : ('a, 'c, 'd) t -> f:('a -> 'b) -> ('b, 'c, 'd) t
+  val return : 'a -> ('a, _, _) t
+end
+
+module type Infix3 = sig
+  type ('a, 'c, 'd) t
+  val (>>=) : ('a, 'c, 'd) t -> ('a -> ('b, 'c, 'd) t) -> ('b, 'c, 'd) t
+  val (>>|) : ('a, 'c, 'd) t -> ('a -> 'b) -> ('b, 'c, 'd) t
+end
+
+module type S3 = sig
+  include Infix3
+
+  module Monad_infix : Infix3 with type ('a, 'c, 'd) t := ('a, 'c, 'd) t
+
+  val bind : ('a, 'c, 'd) t -> ('a -> ('b, 'c, 'd) t) -> ('b, 'c, 'd) t
+
+  val return : 'a -> ('a, _, _) t
+
+  val map : ('a, 'c, 'd) t -> f:('a -> 'b) -> ('b, 'c, 'd) t
+
+  val join : (('a, 'c, 'd) t, 'c, 'd) t -> ('a, 'c, 'd) t
+
+  val ignore : (_, 'c, 'd) t -> (unit, 'c, 'd) t
+
+  val all : ('a, 'c, 'd) t list -> ('a list, 'c, 'd) t
+
+  val all_ignore : (unit, 'c, 'd) t list -> (unit, 'c, 'd) t
+end
+
+module Make3 (M : Basic3) : S3 with type ('a, 'c, 'd) t := ('a, 'c, 'd) M.t = struct
+
+  let bind   = M.bind
+  let map    = M.map
+  let return = M.return
+
+  module Monad_infix = struct
+
+    let (>>=) = bind
+
+    let (>>|) t f = map t ~f
+  end
+
+  include Monad_infix
+
+  let join t = t >>= fun t' -> t'
+
+  let ignore t = map t ~f:(fun _ -> ())
+
+  let all =
+    let rec loop vs = function
+      | [] -> return (List.rev vs)
+      | t :: ts -> t >>= fun v -> loop (v :: vs) ts
+    in
+    fun ts -> loop [] ts
+
+  let rec all_ignore = function
+    | [] -> return ()
+    | t :: ts -> t >>= fun () -> all_ignore ts
+
+end
+
+module Free (F : Functor.T) = struct
+  module M = struct
+    type 'a t =
+      | Pure of 'a
+      | Free of 'a t F.t
+
+      let return x = Pure x
+
+      let rec bind mx f = match mx with
+        | Pure x -> f x
+        | Free x -> Free (F.map ~f:(fun my -> bind my f) x)
+
+      let rec map mx ~f = match mx with
+        | Pure x -> Pure (f x)
+        | Free x -> Free (F.map x ~f:(fun my -> map my ~f))
+  end
+
+  type 'a t = 'a M.t
+
+  include Make(M)
+end
+
+module Free3 (F : Functor.T3) : sig
+  type ('a, 'c, 'd) t =
+    | Pure of 'a
+    | Free of (('a, 'c, 'd) t, 'c, 'd) F.t
+
+  include S3 with type ('a, 'c, 'd) t := ('a, 'c, 'd) t
+end = struct
+  module M = struct
+    type ('a, 'c, 'd) t =
+      | Pure of 'a
+      | Free of (('a, 'c, 'd) t, 'c, 'd) F.t
+
+    let return x = Pure x
+
+    let rec bind mx f = match mx with
+      | Pure x -> f x
+      | Free x -> Free (F.map ~f:(fun my -> bind my f) x)
+
+    let rec map mx ~f = match mx with
+      | Pure x -> Pure (f x)
+      | Free x -> Free (F.map x ~f:(fun my -> map my ~f))
+  end
+
+  include M
+
+  include Make3(M)
+end
