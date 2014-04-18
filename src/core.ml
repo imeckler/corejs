@@ -29,17 +29,27 @@ let print x : unit =
 
 let println s : unit = print (Js.string s)
 
-let set_timeout (ms : float) ~(f:unit -> unit) : unit =
+type timeout
+let set_timeout (ms : float) ~(f:unit -> unit) : timeout =
   Js.Unsafe.(
     fun_call (variable "setTimeout")
       [| inject (Js.wrap_callback f); inject (Js.number_of_float ms) |]
   )
 
-let set_interval (ms : float) ~(f:unit -> unit) : unit =
+let clear_timeout (timeout : timeout) : unit =
+  let open Js.Unsafe in
+  fun_call (variable "clearTimeout") [| inject timeout |]
+
+type interval
+let set_interval (ms : float) ~(f:unit -> unit) : interval =
   Js.Unsafe.(
     fun_call (variable "setInterval")
       [| inject (Js.wrap_callback f); inject (Js.number_of_float ms) |]
   )
+
+let clear_interval (interval : interval) : unit =
+  let open Js.Unsafe in
+  fun_call (variable "clearInterval") [| inject interval |]
 
 let ident x = x
 

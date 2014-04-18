@@ -1,6 +1,8 @@
 (* TODO: Come up with a more principled approach than copying and pasting bits *)
 module List = List
 
+let length = List.length
+
 let iter xs ~f = List.iter f xs
 
 let map xs ~f = List.map f xs
@@ -20,7 +22,7 @@ let rec filter_map xs ~f = match xs with
   | x :: xs ->
     match f x with
     | None -> filter_map ~f xs
-    | Some y -> x :: filter_map ~f xs
+    | Some y -> y :: filter_map ~f xs
 ;;
 
 let rec concat_map xs ~f = match xs with
