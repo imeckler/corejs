@@ -28,6 +28,12 @@ let value_exn = function
 let value_map t ~default ~f = match t with
   | None   -> default
   | Some x -> f x
+;;
+
+let alt t1 t2 = match t1 with
+  | None -> t2
+  | _    -> t1
+;;
 
 include Monad.Make (struct
   type 'a t = 'a option

@@ -21,6 +21,8 @@ let concat_map t ~f = concat (to_list (map ~f t))
 let push (x : 'a) (t : 'a array) =
   ignore ((Obj.magic t : 'a Js.js_array Js.t)##push(x))
 
+let sort t ~cmp = sort cmp t
+
 let exists t ~f =
   let rec loop i =
     if i < 0
@@ -89,3 +91,57 @@ let filter_mapi t ~f = filter_opt (mapi t ~f)
 let filter ~f =  filter_map ~f:(fun x -> if f x then Some x else None)
 
 let filteri ~f = filter_mapi ~f:(fun i x -> if f i x then Some x else None)
+
+let zip' arr1 arr2 =
+  if length arr1 >= length arr2
+  then mapi arr2 ~f:(fun i y -> (arr1.(i), y))
+  else mapi arr1 ~f:(fun i x -> (x, arr2.(i)))
+
+let zip_exn arr1 arr2 =
+  if length arr1 = length arr2
+  then mapi arr1 ~f:(fun i x -> (x, arr2.(i)))
+  else failwith "Array.zip_exn: Arrays had different sizes"
+
+let zip arr1 arr2 = try Some (zip_exn arr1 arr2) with _ -> None
+
+let unzip t =
+  let t1 = init (length t) ~f:(fun i -> fst t.(i)) in
+  let t2 = init (length t) ~f:(fun i -> snd t.(i)) in
+  (t1, t2)
+
+let maximum ?(cmp=compare) t =
+  let rec loop m i =
+    if i < 0 then m
+    else
+      let x = t.(i) in loop (if cmp x m > 0 then x else m) (i - 1)
+  in
+  let n = Array.length t in
+  if n = 0
+  then failwith "Array.maximum: Empty array"
+  else loop t.(n - 1) (n - 2)
+
+let minimum ?(cmp=compare) t =
+  let rec loop m i =
+    if i < 0 then m
+    else
+      let x = t.(i) in loop (if cmp x m < 0 then x else m) (i - 1)
+  in
+  let n = Array.length t in
+  if n = 0
+  then failwith "Array.maximum: Empty array"
+  else loop t.(n - 1) (n - 2)
+
+let swap t i j =
+  let tmp = t.(i) in
+  t.(i) <- t.(j);
+  t.(j) <- tmp
+
+let rev_inplace t =
+  let i = ref 0 in
+  let j = ref (length t - 1) in
+  while !i < !j; do
+    swap t !i !j;
+    incr i;
+    decr j;
+  done
+

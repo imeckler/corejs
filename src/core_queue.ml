@@ -28,11 +28,11 @@ let () =
   let js_iter = Js.Unsafe.eval_string
     "(function(a,f){var len=a.length;for(var i = 0; i < len; ++i){f(a[i]);}})"
   in
-  Js.Unsafe.set namespace "iter" js_iter
+  Js.Unsafe.set namespace (Js.string "iter") js_iter
 ;;
 
 let iter t ~f =
-  Js.Unsafe.(fun_call (get namespace "iter") [| inject t; inject (Js.wrap_callback f) |])
+  Js.Unsafe.(fun_call (get namespace (Js.string "iter")) [| inject t; inject (Js.wrap_callback f) |])
 
 let map t ~f =
   let t' = create () in

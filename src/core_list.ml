@@ -1,11 +1,48 @@
 (* TODO: Come up with a more principled approach than copying and pasting bits *)
 module List = List
 
+let range ?(stride=1) ?(start=`inclusive) ?(stop=`exclusive) start_i stop_i =
+  if stride = 0 then
+    invalid_arg "Core_list.range: stride must be non-zero";
+  (* Generate the range from the last element, so that we do not need to rev it *)
+  let rec loop last counter accum =
+    if counter <= 0 then accum
+    else loop (last - stride) (counter - 1) (last :: accum)
+  in
+  let stride_sign = if stride > 0 then 1 else -1 in
+  let start =
+    match start with
+    | `inclusive -> start_i
+    | `exclusive -> start_i + stride
+  in
+  let stop =
+    match stop with
+    | `inclusive -> stop_i + stride_sign
+    | `exclusive -> stop_i
+  in
+  let num_elts = (stop - start + stride - stride_sign) / stride in
+  loop (start + (stride * (num_elts - 1))) num_elts []
+;;
+
+let unzip list =
+  let rec loop list l1 l2 =
+    match list with
+    | [] -> (List.rev l1, List.rev l2)
+    | (x, y) :: tl -> loop tl (x :: l1) (y :: l2)
+  in
+  loop list [] []
+
 let length = List.length
+
+let iteri xs ~f = List.iteri f xs
 
 let iter xs ~f = List.iter f xs
 
 let map xs ~f = List.map f xs
+
+let mapi xs ~f = List.mapi f xs
+
+let map2_exn xs ys ~f = List.map2 f xs ys
 
 let rev_map xs ~f = List.rev_map f xs
 
