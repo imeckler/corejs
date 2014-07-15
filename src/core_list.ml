@@ -46,6 +46,8 @@ let map2_exn xs ys ~f = List.map2 f xs ys
 
 let rev_map xs ~f = List.rev_map f xs
 
+let rev = List.rev
+
 let filter xs ~f = List.filter f xs
 
 let fold xs ~init ~f = List.fold_left f init xs

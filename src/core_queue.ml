@@ -22,6 +22,8 @@ let peek_exn t =
   else failwith "Queue.peek_exn: Queue empty"
 ;;
 
+let length t = t##length
+
 let namespace = Js.Unsafe.obj [||]
 
 let () =

@@ -10,6 +10,13 @@ let mapi arr ~f = mapi f arr
 
 let init n ~f = init n f
 
+let fold_map t ~init:initial ~f =
+  let acc = ref initial in
+  init (length t) ~f:(fun i ->
+    let (acc', y) = f !acc t.(i) in
+    acc := acc';
+    y)
+
 let create ~len x = create len x
 
 let fold_right t ~f ~init = fold_right f t init
@@ -145,3 +152,5 @@ let rev_inplace t =
     decr j;
   done
 
+let blit ~src ~src_pos ~dst ~dst_pos ~len =
+  blit src src_pos dst dst_pos len

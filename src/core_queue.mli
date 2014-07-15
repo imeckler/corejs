@@ -1,5 +1,7 @@
 type 'a t
 
+val length : 'a t -> int
+
 val iter : 'a t -> f:('a -> unit) -> unit
 
 val map : 'a t -> f:('a -> 'b) -> 'b t

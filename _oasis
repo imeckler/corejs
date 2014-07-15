@@ -21,7 +21,10 @@ Library corejs
                   Either,
                   Functor,
                   Inttbl,
+                  Stringtbl,
                   Monad,
+                  Core_ratio,
+                  Iterator,
                   Time
   ByteOpt:        -syntax camlp4o -package js_of_ocaml -package js_of_ocaml.syntax
   XMETARequires:  js_of_ocaml,js_of_ocaml.syntax

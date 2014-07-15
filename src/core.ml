@@ -3,14 +3,19 @@ module Either = Either
 
 type ('a, 'b) either = ('a, 'b) Either.t
 
-module Array   = Core_array
-module List    = Core_list
-module String  = Core_string
-module Arrow   = Arrow
-module Queue   = Core_queue
-module Inttbl  = Inttbl
-module Functor = Functor
-module Monad   = Monad
+module Array     = Core_array
+module List      = Core_list
+module String    = Core_string
+module Arrow     = Arrow
+module Queue     = Core_queue
+module Inttbl    = Inttbl
+module Stringtbl = Stringtbl
+module Functor   = Functor
+module Monad     = Monad
+module Ratio     = Core_ratio
+module Iterator  = Iterator
+
+include Ratio.Infix
 
 module Time = Time
 
