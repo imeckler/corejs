@@ -1,10 +1,41 @@
-include StringLabels
+module String = StringLabels
+
+let capitalize = String.capitalize
+let concat ?(sep="") l = String.concat ~sep l
+let copy = String.copy
+let escaped = String.escaped
+let fill = String.fill
+let index_exn = String.index
+let index_from_exn = String.index_from
+let lowercase = String.lowercase
+let make = String.make
+let rindex_exn = String.rindex
+let rindex_from_exn = String.rindex_from
+let uncapitalize = String.uncapitalize
+let uppercase = String.uppercase
+let sub = String.sub
+
+let index t char =
+  try Some (index_exn t char)
+  with Not_found -> None
+
+let rindex t char =
+  try Some (rindex_exn t char)
+  with Not_found -> None
+
+let index_from t pos char =
+  try Some (index_from_exn t pos char)
+  with Not_found -> None
+
+let rindex_from t pos char =
+  try Some (rindex_from_exn t pos char)
+  with Not_found -> None
 
 let lsplit2_exn line ~on:delim =
   let pos = StringLabels.index line delim in
-  (sub line ~pos:0 ~len:pos,
-   sub line ~pos:(pos+1) ~len:(String.length line - pos - 1)
-  )
+    (sub line ~pos:0 ~len:pos,
+    sub line ~pos:(pos+1) ~len:(String.length line - pos - 1)
+    )
 
 let rsplit2_exn line ~on:delim =
   let pos = StringLabels.rindex line delim in
