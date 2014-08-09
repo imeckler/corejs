@@ -13,7 +13,9 @@ let rindex_exn = String.rindex
 let rindex_from_exn = String.rindex_from
 let uncapitalize = String.uncapitalize
 let uppercase = String.uppercase
+let length = String.length
 let sub = String.sub
+let create = String.create
 
 let index t char =
   try Some (index_exn t char)
@@ -108,7 +110,6 @@ let split_lines =
       done;
       sub t ~pos:0 ~len:!eol :: !ac
 ;;
-let concat ?(sep="") ts = concat sep ts
 
 let concat_array ?(sep="") ts =
   Js.to_string ((Js.array ts)##join(Js.string sep))
