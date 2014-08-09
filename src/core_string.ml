@@ -90,12 +90,12 @@ let split_lines =
   fun t ->
     let n = length t in
     if n = 0
-    then []
+    then [||]
     else
       (* Invariant: [-1 <= pos < eol]. *)
       let pos = ref (n - 1) in
       let eol = ref n in
-      let ac = ref [] in
+      let ac = [||] in
       (* We treat the end of the string specially, because if the string ends with a
          newline, we don't want an extra empty string at the end of the output. *)
       if t.[!pos] = '\n' then back_up_at_newline ~t ~pos ~eol;
@@ -105,10 +105,12 @@ let split_lines =
         else
           (* Becuase [pos < eol], we know that [start <= eol]. *)
           let start = !pos + 1 in
-          ac := sub t ~pos:start ~len:(!eol - start) :: !ac;
+          Core_array.push (sub t ~pos:start ~len:(!eol - start)) ac;
           back_up_at_newline ~t ~pos ~eol
       done;
-      sub t ~pos:0 ~len:!eol :: !ac
+      Core_array.push (sub t ~pos:0 ~len:!eol) ac;
+      Core_array.rev_inplace ac;
+      ac
 ;;
 
 let concat_array ?(sep="") ts =
