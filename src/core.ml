@@ -13,11 +13,18 @@ module Stringtbl = Stringtbl
 module Functor   = Functor
 module Monad     = Monad
 module Ratio     = Core_ratio
+module Result    = Result
 module Iterator  = Iterator
+
+include Result.Export
 
 include Ratio.Infix
 
 module Time = Time
+
+let (@@) = Array.append
+let (-|) f g x = f (g x)
+let (|-) f g x = g (f x)
 
 let string_of_float x = Js.to_string ((Js.number_of_float x)##toString())
 
