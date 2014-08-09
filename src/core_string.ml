@@ -56,6 +56,7 @@ let rec char_list_mem l (c:char) =
   | [] -> false
   | hd::tl -> hd = c || char_list_mem tl c
 
+(* TODO: Change this to return an array instead of a list *)
 let split_gen str ~on =
   let is_delim =
     match on with
