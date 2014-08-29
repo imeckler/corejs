@@ -39,7 +39,7 @@ let set_global s x =
 let print x : unit = 
   (Js.Unsafe.variable "console")##log(x)
 
-let println s : unit = print (Js.string s)
+let print_endline s : unit = print (Js.string s)
 
 type timeout
 let set_timeout (ms : float) ~(f:unit -> unit) : timeout =
